@@ -1,18 +1,49 @@
-use num::{NumCast,Float};
+use std::ops::Mul;
 
-use crate::point::{Point};
+use num::Float;
+use vector2d::Vector2D;
 
-fn bernstein_polynomial<F : Float>(x : F) -> (F,F,F,F) {
-    let three : F = NumCast::from(3.0).unwrap();
-    (   
-        (F::one() - x).powi(3),
-        three * x * (F::one() - x).powi(2),
-        three * x.powi(2) * (F::one() - x),
-        x.powi(3),
-    )
+use crate::handle::Handle;
+
+pub struct Bezier<F: Float> {
+    handles: Vec<Handle<F>>,
+    detail: usize,
+    points: Vec<Vector2D<F>>,
 }
 
-fn cubic_lerp<F : Float>(a : Point<F>, b : Point<F>, c : Point<F>, d : Point<F>, t : F) -> Point<F> {
-    let weights = bernstein_polynomial(t);
-    a * weights.0 + b * weights.1 + c * weights.2 + d * weights.3
+impl<F: Float> Bezier<F> {
+    pub fn handles_mut(&mut self) -> &mut Vec<Handle<F>> {
+        &mut self.handles
+    }
+    pub fn handles(&self) -> &Vec<Handle<F>> {
+        &self.handles
+    }
+    fn part_points(&self, part_index: usize) -> [&Vector2D<F>; 4] {
+        [
+            &self.handles[part_index].position,
+            &self.handles[part_index].after,
+            &self.handles[part_index + 1].before,
+            &self.handles[part_index + 1].position,
+        ]
+    }
+
+    fn calculate_part(&self, part_index: usize) -> &Vec<Vector2D<F>> {
+        let controls = self.part_points(part_index);
+
+        let f_three = F::from(3.0).unwrap();
+        let f_six = F::from(6.0).unwrap();
+        let coefficients = (
+            *controls[0],
+            controls[0].mul(-f_three) + controls[1].mul(f_three),
+            controls[0].mul(f_three) + controls[1].mul(-f_six) + controls[2].mul(f_three),
+            controls[0].mul(-F::one())
+                + controls[1].mul(f_three)
+                + controls[2].mul(-f_three)
+                + *controls[3],
+        );
+
+        //nice loop? think cuz detached means no part (continous array result return thingy)
+
+        &self.points
+    }
 }

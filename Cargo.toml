@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 num = "0.4.0"
+vector2d = "2.2.0"
+

@@ -1,0 +1,11 @@
+Not C: not attached
+C0 : Attached and corner
+C1 : Mirror (2,3,4) P4 = 2P3 - P2    
+
+G0 : = C0
+G1 : (2,3,4) P4 = P3 + (P3 - P2)*B1 
+G2 : (2,3,4,5) P5 = P3 + (P3 - P2)(2B1 + B1^2 + B2/2) + (P1 - P2)B1^2   .Lose local control!
+B1 ( 1 = mirror ) : var
+B2 : var
+
+C implies occasional G
