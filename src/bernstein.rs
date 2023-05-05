@@ -1,6 +1,6 @@
 use std::ops::Mul;
 
-use num::Float;
+use num::{Float, Num, NumCast};
 use vector2d::Vector2D;
 
 use crate::handle::{Continuity, Direction, Handle, PartValidity};
@@ -9,6 +9,10 @@ pub struct Bezier<F: Float> {
     handles: Vec<Handle<F>>,
     detail: usize,
     points: Vec<Vector2D<F>>,
+}
+
+fn interpolate<T: Float>(a: &Vector2D<T>, b: &Vector2D<T>, t: T) -> Vector2D<T> {
+    a.mul(T::one() - t) + b.mul(t)
 }
 
 impl<F: Float> Bezier<F> {
@@ -26,6 +30,36 @@ impl<F: Float> Bezier<F> {
     pub fn handles(&self) -> &Vec<Handle<F>> {
         &self.handles
     }
+
+    ///Inserts a handle without changing the appearance of the curve.
+    ///### Parameters
+    /// * Time: decimal value in which the value before the decimal
+    /// is the part index, and the value after is the progress
+    /// through that part.
+    ///### Example
+    /// ```
+    ///
+    /// ```
+    pub fn knot_insert(&mut self, mut time: F) {
+        let part_index = <usize as NumCast>::from(time).unwrap();
+        let points = self.part_points(part_index);
+        time = time - time.floor();
+
+        let center_point = interpolate(points[1], points[2], time);
+
+        let prev_forward = interpolate(points[0], points[1], time);
+        let next_backward = interpolate(points[2], points[3], time);
+        let new_backward = interpolate(&prev_forward, &center_point, time);
+        let new_forward = interpolate(&center_point, &next_backward, time);
+        let new_position = interpolate(&new_backward, &new_forward, time);
+
+        self.handles[part_index].after = prev_forward;
+        self.handles[part_index + 1].before = next_backward;
+
+        let handle = Handle::new(new_backward, new_position, new_forward);
+        self.handles.insert(part_index + 1, handle);
+    }
+
     fn part_points(&self, part_index: usize) -> [&Vector2D<F>; 4] {
         if part_index >= self.handles.len() - 1 {
             panic!("part_index exceeds part length in part_points");
@@ -38,7 +72,7 @@ impl<F: Float> Bezier<F> {
         ]
     }
     pub fn all_part_point_dbg(&self) -> Vec<Vector2D<F>> {
-        let mut result : Vec<Vector2D<F>> = vec![];
+        let mut result: Vec<Vector2D<F>> = vec![];
         for part_index in 0..self.handles().len() - 1 {
             result.push(self.part_points(part_index)[0].to_owned());
             result.push(self.part_points(part_index)[1].to_owned());

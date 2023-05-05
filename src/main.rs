@@ -13,7 +13,7 @@ use poloto::*;
 use vector2d::Vector2D;
 
 fn main() {
-    let mut bezier = Bezier::new(1000,4);
+    let mut bezier = Bezier::new(1000, 4);
 
     bezier.handles_mut().push(Handle::new(
         Vector2D::new(-1.0, 0.0),
@@ -34,14 +34,19 @@ fn main() {
         Vector2D::new(8.0, 0.0),
         2.0,
     ));
-    
+    bezier.knot_insert(0.5);
+
     let scatter_points = bezier.all_part_point_dbg();
 
     let points = bezier.calculate();
     let _ = plot(&points, &scatter_points, String::from("output.svg"));
 }
 
-fn plot(points: &Vec<Vector2D<f64>>, scatter: &Vec<Vector2D<f64>>, filename: String) -> Result<(), Box<dyn Error>> {
+fn plot(
+    points: &Vec<Vector2D<f64>>,
+    scatter: &Vec<Vector2D<f64>>,
+    filename: String,
+) -> Result<(), Box<dyn Error>> {
     let cleartheme = poloto::render::Theme::light()
         .append(".poloto_background{fill:white;}")
         .append(".poloto_imgs.poloto_ticks{stroke:white;stroke-width:0px;}")
