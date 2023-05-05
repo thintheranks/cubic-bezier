@@ -6,7 +6,7 @@ use std::{
 
 use cubic_bezier::{
     bernstein::Bezier,
-    handle::{Direction, Handle},
+    handle::Handle,
 };
 use hypermelon::{self, prelude::Elem};
 use poloto::*;
@@ -15,21 +15,21 @@ use vector2d::Vector2D;
 fn main() {
     let mut bezier = Bezier::new(1000, 4);
 
-    bezier.handles_mut().push(Handle::new(
+    bezier.push_handle(Handle::new(
         Vector2D::new(-1.0, 0.0),
         Vector2D::new(0.0, 0.0),
         Vector2D::new(1.5, 0.5),
     ));
-    bezier.handles_mut().push(Handle::new(
+    bezier.push_handle(Handle::new(
         Vector2D::new(1.0, 3.0),
         Vector2D::new(3.0, 3.0),
         Vector2D::new(3.0, 1.0),
     ));
-    bezier.handles_mut().push(Handle::mirrored(
+    bezier.push_handle(Handle::mirrored(
         Vector2D::new(5.0, 1.0),
         Vector2D::new(5.0, 0.0),
     ));
-    bezier.handles_mut().push(Handle::aligned(
+    bezier.push_handle(Handle::aligned(
         Vector2D::new(7.0, -2.5),
         Vector2D::new(8.0, 0.0),
         2.0,

@@ -1,6 +1,6 @@
-use std::ops::Mul;
+use std::ops::{Mul, Range};
 
-use num::{Float, Num, NumCast};
+use num::{Float, NumCast};
 use vector2d::Vector2D;
 
 use crate::handle::{Continuity, Direction, Handle, PartValidity};
@@ -24,11 +24,45 @@ impl<F: Float> Bezier<F> {
         }
     }
 
-    pub fn handles_mut(&mut self) -> &mut Vec<Handle<F>> {
-        &mut self.handles
+    pub fn invalidate_handle(&mut self, handle_index : usize) {
+        self.handles[handle_index].validity = PartValidity::Invalidated;
     }
-    pub fn handles(&self) -> &Vec<Handle<F>> {
-        &self.handles
+    pub fn invalidate_handle_range(&mut self, handle_range: Range<usize>) {
+        for index in handle_range {
+            self.handles[index].validity = PartValidity::Invalidated;
+        }
+    }
+
+    pub fn push_handle(&mut self, handle: Handle<F>) {
+        self.handles.push(handle);
+    }
+    pub fn insert_handle(&mut self, index: usize, handle: Handle<F>) {
+        self.invalidate_handle(index - 1);
+        self.handles.insert(index, handle);
+    }
+    pub fn splice_handle(&mut self, range: Range<usize>, handles: Vec<Handle<F>>) {
+        self.invalidate_handle(range.start - 1);
+        self.handles.splice(range, handles);
+    }
+
+    pub fn remove_handle(&mut self, index: usize) {
+        self.handles.remove(index);
+        self.invalidate_handle(index - 1);
+    }
+    pub fn drain_handle(&mut self, range: Range<usize>) {
+        self.invalidate_handle(range.start - 1);
+        self.handles.drain(range);
+    }
+
+    pub fn get_handle(&self, index: usize) -> &Handle<F> {
+        &self.handles[index]
+    }
+    pub unsafe fn get_handle_mut(&mut self, index: usize) -> &mut Handle<F> {
+        &mut self.handles[index]
+    }
+    pub fn set_handle(&mut self, index: usize, handle: Handle<F>) {
+        self.handles[index] = handle;
+        self.invalidate_handle(index);
     }
 
     ///Inserts a handle without changing the appearance of the curve.
@@ -73,7 +107,7 @@ impl<F: Float> Bezier<F> {
     }
     pub fn all_part_point_dbg(&self) -> Vec<Vector2D<F>> {
         let mut result: Vec<Vector2D<F>> = vec![];
-        for part_index in 0..self.handles().len() - 1 {
+        for part_index in 0..self.handles.len() - 1 {
             result.push(self.part_points(part_index)[0].to_owned());
             result.push(self.part_points(part_index)[1].to_owned());
             result.push(self.part_points(part_index)[2].to_owned());
