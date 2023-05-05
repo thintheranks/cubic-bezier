@@ -3,12 +3,21 @@ use std::ops::Mul;
 use num::Float;
 use vector2d::Vector2D;
 
+#[derive(PartialEq)]
+pub enum PartValidity {
+    Uninitialized,
+    Invalidated,
+    Valid,
+}
+
+#[derive(PartialEq)]
 pub enum Direction {
     Forward,
     Backward,
     Both,
 }
 
+#[derive(PartialEq)]
 pub enum Continuity {
     Detached(Direction),
     Broken,
@@ -22,6 +31,7 @@ pub struct Handle<F: Float> {
     pub after: Vector2D<F>,
 
     pub continuity: Continuity,
+    pub(crate) validity: PartValidity,
 }
 
 impl<F: Float> Handle<F> {
@@ -32,6 +42,7 @@ impl<F: Float> Handle<F> {
             position,
             after,
             continuity: Continuity::Detached(direction),
+            validity: PartValidity::Uninitialized,
         }
     }
     pub fn new(before: Vector2D<F>, position: Vector2D<F>, after: Vector2D<F>) -> Self {
@@ -40,6 +51,7 @@ impl<F: Float> Handle<F> {
             position,
             after,
             continuity: Continuity::Broken,
+            validity: PartValidity::Uninitialized,
         }
     }
     pub fn aligned(before: Vector2D<F>, position: Vector2D<F>, after_multiplier: F) -> Self {
@@ -49,6 +61,7 @@ impl<F: Float> Handle<F> {
             position,
             after,
             continuity: Continuity::Aligned,
+            validity: PartValidity::Uninitialized,
         }
     }
     pub fn mirrored(before: Vector2D<F>, position: Vector2D<F>) -> Self {
@@ -58,6 +71,7 @@ impl<F: Float> Handle<F> {
             position,
             after,
             continuity: Continuity::Mirrored,
+            validity: PartValidity::Uninitialized,
         }
     }
 }

@@ -1,0 +1,80 @@
+<svg class="poloto" width="800" height="500" viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+	<style>
+ .poloto{
+  stroke-linecap:round;
+  stroke-linejoin:round;
+  font-family:Roboto,sans-serif;
+  font-size:16px;
+}
+.poloto_background{fill:AliceBlue;}
+.poloto_scatter{stroke-width:7}
+.poloto_line{stroke-width:2}
+.poloto_text{fill: black;}
+.poloto_name{font-size:24px;dominant-baseline:start;text-anchor:middle;}
+.poloto_where{dominant-baseline:middle;text-anchor:start}
+.poloto_text.poloto_legend{font-size:20px;dominant-baseline:middle;text-anchor:start;}
+.poloto_text.poloto_ticks.poloto_y{dominant-baseline:middle;text-anchor:end}
+.poloto_text.poloto_ticks.poloto_x{dominant-baseline:start;text-anchor:middle}
+.poloto_imgs.poloto_ticks{stroke: black;stroke-width:3;fill:none;stroke-dasharray:none}
+.poloto_grid{stroke:gray;stroke-width:0.5}
+
+.poloto0.poloto_stroke{stroke:blue;}
+.poloto1.poloto_stroke{stroke:red;}
+.poloto2.poloto_stroke{stroke:green;}
+.poloto3.poloto_stroke{stroke:gold;}
+.poloto4.poloto_stroke{stroke:aqua;}
+.poloto5.poloto_stroke{stroke:lime;}
+.poloto6.poloto_stroke{stroke:orange;}
+.poloto7.poloto_stroke{stroke:chocolate;}
+.poloto0.poloto_fill{fill:blue;}
+.poloto1.poloto_fill{fill:red;}
+.poloto2.poloto_fill{fill:green;}
+.poloto3.poloto_fill{fill:gold;}
+.poloto4.poloto_fill{fill:aqua;}
+.poloto5.poloto_fill{fill:lime;}
+.poloto6.poloto_fill{fill:orange;}
+.poloto7.poloto_fill{fill:chocolate;}
+ .poloto_background{fill:white;}
+ .poloto_imgs.poloto_ticks{stroke:white;stroke-width:0px;}
+ .poloto_text{fill: white;stroke-width:0px;}
+ .poloto_scatter.poloto_plot{fill:black;stroke-width:3px;}
+ .poloto_line.poloto_imgs.poloto_plot{stroke:black;stroke-width:2px}
+	</style>
+	<circle r="1e5" class="poloto_background"/>
+	<g id="poloto_plot0" class="poloto_plot poloto_imgs poloto_line poloto0 poloto_stroke" fill="none" stroke="black">
+		<path d=" M 150.00 306.04 L 152.78 304.97 L 155.48 303.82 L 158.11 302.59 L 160.67 301.28 L 163.16 299.90 L 165.59 298.45 L 167.95 296.92 L 170.24 295.32 L 172.48 293.66 L 174.66 291.93 L 176.77 290.14 L 178.84 288.28 L 180.84 286.37 L 182.80 284.39 L 184.70 282.36 L 186.55 280.28 L 188.36 278.14 L 190.12 275.95 L 191.83 273.71 L 193.50 271.43 L 195.13 269.10 L 196.72 266.73 L 198.27 264.31 L 199.79 261.85 L 201.27 259.36 L 202.72 256.83 L 204.14 254.27 L 205.52 251.67 L 206.88 249.05 L 208.22 246.39 L 209.53 243.71 L 210.82 241.01 L 212.08 238.28 L 213.33 235.53 L 214.56 232.76 L 215.77 229.97 L 216.97 227.17 L 218.16 224.35 L 219.33 221.52 L 220.50 218.68 L 221.66 215.83 L 222.81 212.98 L 223.96 210.12 L 225.11 207.26 L 226.25 204.40 L 227.40 201.54 L 228.55 198.68 L 229.70 195.83 L 230.86 192.98 L 232.03 190.14 L 233.21 187.32 L 234.40 184.50 L 235.60 181.70 L 236.81 178.91 L 238.04 176.15 L 239.29 173.40 L 240.56 170.67 L 241.85 167.97 L 243.16 165.29 L 244.50 162.64 L 245.86 160.01 L 247.25 157.42 L 248.68 154.86 L 250.13 152.34 L 251.61 149.85 L 253.13 147.40 L 254.69 144.99 L 256.28 142.62 L 257.92 140.29 L 259.59 138.02 L 261.31 135.78 L 263.08 133.60 L 264.89 131.47 L 266.74 129.39 L 268.65 127.37 L 270.61 125.40 L 272.62 123.49 L 274.69 121.64 L 276.82 119.85 L 279.00 118.13 L 281.24 116.48 L 283.55 114.89 L 285.92 113.37 L 288.35 111.92 L 290.85 110.55 L 293.42 109.25 L 296.05 108.03 L 298.76 106.88 L 301.55 105.82 L 304.41 104.84 L 307.34 103.95 L 310.36 103.14 L 313.45 102.42 L 316.63 101.79 L 319.89 101.25 L 323.23 100.80 L 326.66 100.46 L 330.19 100.20 L 333.80 100.05 L 337.50 100.00 L 337.50 100.00 L 337.54 104.08 L 337.65 108.08 L 337.83 112.00 L 338.08 115.84 L 338.41 119.60 L 338.80 123.29 L 339.25 126.90 L 339.77 130.44 L 340.36 133.90 L 341.00 137.29 L 341.70 140.62 L 342.47 143.87 L 343.29 147.06 L 344.16 150.18 L 345.09 153.24 L 346.08 156.23 L 347.11 159.16 L 348.19 162.03 L 349.32 164.83 L 350.50 167.58 L 351.72 170.27 L 352.99 172.91 L 354.30 175.49 L 355.64 178.01 L 357.03 180.49 L 358.46 182.91 L 359.92 185.28 L 361.41 187.60 L 362.94 189.87 L 364.50 192.10 L 366.09 194.28 L 367.71 196.42 L 369.35 198.52 L 371.02 200.57 L 372.72 202.58 L 374.44 204.56 L 376.17 206.49 L 377.93 208.39 L 379.71 210.26 L 381.50 212.09 L 383.31 213.88 L 385.13 215.65 L 386.96 217.38 L 388.80 219.09 L 390.66 220.77 L 392.52 222.42 L 394.38 224.04 L 396.25 225.64 L 398.13 227.22 L 400.00 228.78 L 401.87 230.31 L 403.75 231.83 L 405.62 233.33 L 407.48 234.81 L 409.34 236.27 L 411.20 237.72 L 413.04 239.16 L 414.87 240.59 L 416.69 242.00 L 418.50 243.41 L 420.29 244.80 L 422.07 246.19 L 423.83 247.58 L 425.56 248.96 L 427.28 250.33 L 428.98 251.71 L 430.65 253.08 L 432.29 254.46 L 433.91 255.83 L 435.50 257.21 L 437.06 258.59 L 438.59 259.98 L 440.08 261.38 L 441.54 262.78 L 442.97 264.19 L 444.36 265.61 L 445.70 267.05 L 447.01 268.49 L 448.28 269.95 L 449.50 271.43 L 450.68 272.92 L 451.81 274.43 L 452.89 275.96 L 453.92 277.51 L 454.91 279.08 L 455.84 280.67 L 456.71 282.29 L 457.53 283.93 L 458.30 285.60 L 459.00 287.29 L 459.64 289.02 L 460.23 290.77 L 460.75 292.56 L 461.20 294.38 L 461.59 296.23 L 461.92 298.12 L 462.17 300.04 L 462.35 302.00 L 462.46 304.00 L 462.50 306.04 L 462.50 306.04 L 462.54 308.11 L 462.65 310.20 L 462.83 312.31 L 463.09 314.43 L 463.41 316.57 L 463.81 318.71 L 464.27 320.87 L 464.80 323.03 L 465.40 325.20 L 466.06 327.37 L 466.79 329.54 L 467.58 331.72 L 468.43 333.89 L 469.34 336.06 L 470.30 338.23 L 471.33 340.38 L 472.42 342.53 L 473.56 344.67 L 474.75 346.79 L 476.00 348.90 L 477.30 350.99 L 478.65 353.07 L 480.06 355.12 L 481.51 357.16 L 483.01 359.16 L 484.55 361.15 L 486.15 363.10 L 487.78 365.03 L 489.46 366.92 L 491.19 368.78 L 492.95 370.61 L 494.76 372.40 L 496.60 374.15 L 498.48 375.86 L 500.40 377.53 L 502.35 379.15 L 504.34 380.73 L 506.36 382.26 L 508.42 383.74 L 510.50 385.16 L 512.61 386.54 L 514.76 387.86 L 516.93 389.12 L 519.13 390.32 L 521.35 391.46 L 523.60 392.54 L 525.87 393.55 L 528.16 394.50 L 530.48 395.38 L 532.81 396.19 L 535.17 396.92 L 537.54 397.59 L 539.92 398.17 L 542.33 398.68 L 544.74 399.11 L 547.17 399.46 L 549.61 399.72 L 552.07 399.90 L 554.53 400.00 L 557.00 400.00 L 559.48 399.91 L 561.96 399.73 L 564.45 399.46 L 566.95 399.09 L 569.45 398.62 L 571.94 398.05 L 574.44 397.38 L 576.94 396.61 L 579.44 395.73 L 581.94 394.75 L 584.43 393.65 L 586.92 392.44 L 589.40 391.12 L 591.87 389.69 L 594.34 388.14 L 596.79 386.47 L 599.24 384.68 L 601.67 382.77 L 604.09 380.73 L 606.50 378.57 L 608.89 376.28 L 611.27 373.86 L 613.63 371.31 L 615.97 368.63 L 618.29 365.81 L 620.59 362.85 L 622.87 359.76 L 625.12 356.52 L 627.36 353.14 L 629.56 349.62 L 631.74 345.95 L 633.90 342.14 L 636.02 338.17 L 638.12 334.05 L 640.18 329.78 L 642.21 325.35 L 644.21 320.76 L 646.18 316.02 L 648.11 311.11 L 650.00 306.04"/>
+	</g>
+	<text class="poloto_text poloto_name poloto_title" x="400.00" y="37.50"></text>
+	<text class="poloto_text poloto_name poloto_x" x="400.00" y="481.25"></text>
+	<text class="poloto_text poloto_name poloto_y" x="37.50" y="250.00" transform="rotate(-90,37.50,250.00)"></text>
+	<text class="poloto_text poloto_ticks poloto_y">
+		<tspan x="135.00" y="374.73">-1</tspan>
+		<tspan x="135.00" y="306.04">0</tspan>
+		<tspan x="135.00" y="237.36">1</tspan>
+		<tspan x="135.00" y="168.68">2</tspan>
+		<tspan x="135.00" y="100.00">3</tspan>
+	</text>
+	<g class="poloto_imgs poloto_ticks poloto_y">
+		<line x1="150.00" x2="144.00" y1="374.73" y2="374.73"/>
+		<line x1="150.00" x2="144.00" y1="306.04" y2="306.04"/>
+		<line x1="150.00" x2="144.00" y1="237.36" y2="237.36"/>
+		<line x1="150.00" x2="144.00" y1="168.68" y2="168.68"/>
+		<line x1="150.00" x2="144.00" y1="100.00" y2="100.00"/>
+	</g>
+	<text class="poloto_text poloto_ticks poloto_x">
+		<tspan x="150.00" y="430.00">0</tspan>
+		<tspan x="275.00" y="430.00">2</tspan>
+		<tspan x="400.00" y="430.00">4</tspan>
+		<tspan x="525.00" y="430.00">6</tspan>
+		<tspan x="650.00" y="430.00">8</tspan>
+	</text>
+	<g class="poloto_imgs poloto_ticks poloto_x">
+		<line x1="150.00" x2="150.00" y1="400.00" y2="405.00"/>
+		<line x1="275.00" x2="275.00" y1="400.00" y2="405.00"/>
+		<line x1="400.00" x2="400.00" y1="400.00" y2="405.00"/>
+		<line x1="525.00" x2="525.00" y1="400.00" y2="405.00"/>
+		<line x1="650.00" x2="650.00" y1="400.00" y2="405.00"/>
+	</g>
+	<path class="poloto_imgs poloto_ticks poloto_x" style="stroke-dasharray:6.25;stroke-dashoffset:-0;" d=" M 150.00 400.00 L 650.00 400.00"/>
+	<path class="poloto_imgs poloto_ticks poloto_y" style="stroke-dasharray:6.868131868131867;stroke-dashoffset:-25.27472527472527;" d=" M 150.00 400.00 L 150.00 100.00"/>
+</svg>
