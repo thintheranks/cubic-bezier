@@ -9,3 +9,8 @@ B1 ( 1 = mirror ) : var
 B2 : var
 
 C implies occasional G
+
+
+
+okay so need way to borrow then change handles but it needs
+to keep track of wether it changed.

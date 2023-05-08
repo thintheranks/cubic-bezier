@@ -3,11 +3,13 @@ use std::ops::{Mul, Range};
 use num::{Float, NumCast};
 use vector2d::Vector2D;
 
-use crate::handle::{Continuity, Direction, Handle, PartValidity};
+use crate::handle::{Continuity, Direction, Handle, Validity};
 
 pub struct Bezier<F: Float> {
     handles: Vec<Handle<F>>,
     detail: usize,
+
+    num_ignored: usize,
     points: Vec<Vector2D<F>>,
 }
 
@@ -21,35 +23,31 @@ impl<F: Float> Bezier<F> {
             handles: Vec::with_capacity(expected_handle_num),
             detail,
             points: Vec::with_capacity(expected_handle_num * detail),
+            num_ignored: 0,
         }
     }
 
-    pub fn invalidate_handle(&mut self, handle_index : usize) {
-        self.handles[handle_index].validity = PartValidity::Invalidated;
-    }
-    pub fn invalidate_handle_range(&mut self, handle_range: Range<usize>) {
-        for index in handle_range {
-            self.handles[index].validity = PartValidity::Invalidated;
-        }
+    fn invalidate_handle(&mut self, handle_index: usize) {
+        self.handles[handle_index].validity = Validity::Invalidated;
     }
 
-    pub fn push_handle(&mut self, handle: Handle<F>) {
+    pub fn push(&mut self, handle: Handle<F>) {
         self.handles.push(handle);
     }
-    pub fn insert_handle(&mut self, index: usize, handle: Handle<F>) {
+    pub fn insert(&mut self, index: usize, handle: Handle<F>) {
         self.invalidate_handle(index - 1);
         self.handles.insert(index, handle);
     }
-    pub fn splice_handle(&mut self, range: Range<usize>, handles: Vec<Handle<F>>) {
+    pub fn splice(&mut self, range: Range<usize>, handles: Vec<Handle<F>>) {
         self.invalidate_handle(range.start - 1);
         self.handles.splice(range, handles);
     }
 
-    pub fn remove_handle(&mut self, index: usize) {
+    pub fn remove(&mut self, index: usize) {
         self.handles.remove(index);
         self.invalidate_handle(index - 1);
     }
-    pub fn drain_handle(&mut self, range: Range<usize>) {
+    pub fn drain(&mut self, range: Range<usize>) {
         self.invalidate_handle(range.start - 1);
         self.handles.drain(range);
     }
@@ -57,25 +55,25 @@ impl<F: Float> Bezier<F> {
     pub fn get_handle(&self, index: usize) -> &Handle<F> {
         &self.handles[index]
     }
-    pub unsafe fn get_handle_mut(&mut self, index: usize) -> &mut Handle<F> {
-        &mut self.handles[index]
-    }
-    pub fn set_handle(&mut self, index: usize, handle: Handle<F>) {
-        self.handles[index] = handle;
+    pub fn get_handle_mut(&mut self, index: usize) -> &mut Handle<F> {
         self.invalidate_handle(index);
+        &mut self.handles[index]
     }
 
     ///Inserts a handle without changing the appearance of the curve.
-    ///### Parameters
+    ///# Parameters
     /// * Time: decimal value in which the value before the decimal
     /// is the part index, and the value after is the progress
     /// through that part.
-    ///### Example
+    ///
     /// ```
     ///
     /// ```
     pub fn knot_insert(&mut self, mut time: F) {
         let part_index = <usize as NumCast>::from(time).unwrap();
+        if part_index >= self.handles.len() - 1 {
+            panic!("Knot insertion failed because time was out of bounds.")
+        }
         let points = self.part_points(part_index);
         time = time - time.floor();
 
@@ -94,6 +92,7 @@ impl<F: Float> Bezier<F> {
         self.handles.insert(part_index + 1, handle);
     }
 
+    /// Return the 4 points of a part.
     fn part_points(&self, part_index: usize) -> [&Vector2D<F>; 4] {
         if part_index >= self.handles.len() - 1 {
             panic!("part_index exceeds part length in part_points");
@@ -105,6 +104,7 @@ impl<F: Float> Bezier<F> {
             &self.handles[part_index + 1].position,
         ]
     }
+    /// Debug function to get a vector of all control points.
     pub fn all_part_point_dbg(&self) -> Vec<Vector2D<F>> {
         let mut result: Vec<Vector2D<F>> = vec![];
         for part_index in 0..self.handles.len() - 1 {
@@ -115,6 +115,7 @@ impl<F: Float> Bezier<F> {
         }
         result
     }
+    /// Returns wether a part is empty. This could happen due to a handle being detached.
     fn part_is_empty(&self, part_index: usize) -> bool {
         if part_index >= self.handles.len() - 1 {
             panic!("part_index exceeds part length in part_is_empty");
@@ -124,17 +125,20 @@ impl<F: Float> Bezier<F> {
             || self.handles[part_index + 1].continuity == Continuity::Detached(Direction::Backward)
             || self.handles[part_index + 1].continuity == Continuity::Detached(Direction::Both)
     }
-
-    fn calculate_part(&mut self, part_index: usize, n: usize) -> usize {
+    /// Calculate a single part.
+    /// # Parameters
+    /// * Part_index: index of the handle at the start of a part.
+    fn calculate_part(&mut self, part_index: usize) {
         if part_index >= self.handles.len() - 1 {
             panic!("part_index exceeds part length in calculate_part");
         }
         let validity = &self.handles[part_index].validity;
         if self.part_is_empty(part_index) {
-            return n + 1;
+            self.num_ignored += 1;
+            return;
         }
-        if validity == &PartValidity::Valid {
-            return n;
+        if validity == &Validity::Valid {
+            return;
         }
 
         let controls = self.part_points(part_index);
@@ -151,8 +155,8 @@ impl<F: Float> Bezier<F> {
                 + *controls[3],
         );
 
-        let start_index = (self.detail + 1) * (part_index - n);
-        if validity == &PartValidity::Uninitialized {
+        let start_index = (self.detail + 1) * (part_index - self.num_ignored);
+        if validity == &Validity::Uninitialized {
             self.points.splice(
                 start_index..start_index,
                 vec![Vector2D::new(F::zero(), F::zero()); self.detail + 1],
@@ -161,19 +165,33 @@ impl<F: Float> Bezier<F> {
 
         for point_index in 0..=self.detail {
             let t = F::from(point_index).unwrap() / F::from(self.detail).unwrap();
+            let tpow2 = t * t;
+            let tpow3 = t * tpow2;
             self.points[start_index + point_index] = coefficients.0
                 + coefficients.1.mul(t)
-                + coefficients.2.mul(t.powi(2))
-                + coefficients.3.mul(t.powi(3));
+                + coefficients.2.mul(tpow2)
+                + coefficients.3.mul(tpow3);
         }
-        self.handles[part_index].validity = PartValidity::Valid;
-        n
+        self.handles[part_index].validity = Validity::Valid;
     }
 
+    /// Calculate all points of the curve. Does not recalculate
+    /// if a part was unchanged. Returns a vector with coordinates
+    /// of length *detail * num_handles*.
+    /// ```
+    /// use cubic_bezier::{handle::Handle,bezier::Bezier};
+    ///
+    /// let bezier = Bezier::new(50,2);
+    /// bezier.push_handle(Handle::mirrored(point!(0.0,0.0),point!(1.0,0.0)));
+    /// bezier.push_handle(Handle::mirrored(point!(2.0,2.0),point!(3.0,3.0)));
+    ///
+    /// let points = bezier.calculate();
+    /// assert_eq!(points.len(),50 * 2);
+    /// ```
     pub fn calculate(&mut self) -> &Vec<Vector2D<F>> {
-        let mut n = 0;
+        self.num_ignored = 0;
         for part_index in 0..self.handles.len() - 1 {
-            n = self.calculate_part(part_index, n);
+            self.calculate_part(part_index);
         }
         &self.points
     }

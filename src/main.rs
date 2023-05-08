@@ -4,42 +4,27 @@ use std::{
     io::Write,
 };
 
-use cubic_bezier::{
-    bernstein::Bezier,
-    handle::Handle,
-};
+use cubic_bezier::{bezier::Bezier, handle::Handle};
+
 use hypermelon::{self, prelude::Elem};
 use poloto::*;
 use vector2d::Vector2D;
 
+mod handle;
+
 fn main() {
-    let mut bezier = Bezier::new(1000, 4);
+    let mut bezier = Bezier::new(100, 2);
 
-    bezier.push_handle(Handle::new(
-        Vector2D::new(-1.0, 0.0),
-        Vector2D::new(0.0, 0.0),
-        Vector2D::new(1.5, 0.5),
-    ));
-    bezier.push_handle(Handle::new(
-        Vector2D::new(1.0, 3.0),
-        Vector2D::new(3.0, 3.0),
-        Vector2D::new(3.0, 1.0),
-    ));
-    bezier.push_handle(Handle::mirrored(
-        Vector2D::new(5.0, 1.0),
-        Vector2D::new(5.0, 0.0),
-    ));
-    bezier.push_handle(Handle::aligned(
-        Vector2D::new(7.0, -2.5),
-        Vector2D::new(8.0, 0.0),
-        2.0,
-    ));
-    bezier.knot_insert(0.5);
+    bezier.push(Handle::mirrored(point!(-1.0, -1.0), point!(0.0, 0.0)));
+    bezier.push(Handle::mirrored(point!(5.0, -1.0), point!(6.0, 0.0)));
 
-    let scatter_points = bezier.all_part_point_dbg();
+    bezier.calculate();
+
+    bezier.get_handle_mut(0).position.y += 2.0;
 
     let points = bezier.calculate();
-    let _ = plot(&points, &scatter_points, String::from("output.svg"));
+
+    let _ = plot(&points, &vec![], String::from("output.svg"));
 }
 
 fn plot(

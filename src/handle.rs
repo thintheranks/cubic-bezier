@@ -1,10 +1,17 @@
-use std::ops::Mul;
+use std::{borrow::BorrowMut, ops::Mul};
 
 use num::Float;
 use vector2d::Vector2D;
 
+#[macro_export]
+macro_rules! point {
+    ($x : expr,$y : expr) => {
+        Vector2D::new($x, $y)
+    };
+}
+
 #[derive(PartialEq)]
-pub enum PartValidity {
+pub enum Validity {
     Uninitialized,
     Invalidated,
     Valid,
@@ -31,47 +38,38 @@ pub struct Handle<F: Float> {
     pub after: Vector2D<F>,
 
     pub continuity: Continuity,
-    pub(crate) validity: PartValidity,
+    pub(crate) validity: Validity,
 }
 
 impl<F: Float> Handle<F> {
-    pub fn detached(before: Vector2D<F>, position: Vector2D<F>, direction: Direction) -> Self {
-        let after = position.mul(F::from(2.0).unwrap()) - before;
+    fn empty(
+        before: Vector2D<F>,
+        position: Vector2D<F>,
+        after: Vector2D<F>,
+        continuity: Continuity,
+    ) -> Self {
         Handle {
             before,
             position,
             after,
-            continuity: Continuity::Detached(direction),
-            validity: PartValidity::Uninitialized,
+            continuity,
+            validity: Validity::Uninitialized,
         }
     }
+
+    pub fn detached(before: Vector2D<F>, position: Vector2D<F>, direction: Direction) -> Self {
+        let after = position.mul(F::from(2.0).unwrap()) - before;
+        Handle::empty(before, position, after, Continuity::Detached(direction))
+    }
     pub fn new(before: Vector2D<F>, position: Vector2D<F>, after: Vector2D<F>) -> Self {
-        Handle {
-            before,
-            position,
-            after,
-            continuity: Continuity::Broken,
-            validity: PartValidity::Uninitialized,
-        }
+        Handle::empty(before, position, after, Continuity::Broken)
     }
     pub fn aligned(before: Vector2D<F>, position: Vector2D<F>, after_multiplier: F) -> Self {
         let after = position + (position - before) * after_multiplier;
-        Handle {
-            before,
-            position,
-            after,
-            continuity: Continuity::Aligned,
-            validity: PartValidity::Uninitialized,
-        }
+        Handle::empty(before, position, after, Continuity::Aligned)
     }
     pub fn mirrored(before: Vector2D<F>, position: Vector2D<F>) -> Self {
         let after = position.mul(F::from(2.0).unwrap()) - before;
-        Handle {
-            before,
-            position,
-            after,
-            continuity: Continuity::Mirrored,
-            validity: PartValidity::Uninitialized,
-        }
+        Handle::empty(before, position, after, Continuity::Mirrored)
     }
 }
