@@ -1,30 +1,23 @@
-use std::{borrow::BorrowMut, ops::Mul};
+use std::ops::Mul;
 
 use num::Float;
 use vector2d::Vector2D;
 
-#[macro_export]
-macro_rules! point {
-    ($x : expr,$y : expr) => {
-        Vector2D::new($x, $y)
-    };
-}
-
-#[derive(PartialEq)]
+#[derive(PartialEq,Clone)]
 pub enum Validity {
     Uninitialized,
     Invalidated,
     Valid,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq,Clone)]
 pub enum Direction {
     Forward,
     Backward,
     Both,
 }
 
-#[derive(PartialEq)]
+#[derive(PartialEq,Clone)]
 pub enum Continuity {
     Detached(Direction),
     Broken,
@@ -32,6 +25,7 @@ pub enum Continuity {
     Mirrored,
 }
 
+#[derive(Clone)]
 pub struct Handle<F: Float> {
     pub before: Vector2D<F>,
     pub position: Vector2D<F>,
@@ -57,6 +51,20 @@ impl<F: Float> Handle<F> {
         }
     }
 
+    /// Create a handle that is not attached to the rest of the bezier
+    /// on one or both sides. This function does not ensure continuity.
+    /// ### Parameters
+    /// A handle consists of three points in the order
+    /// 1. before,
+    /// 2. position,
+    /// 3. after.
+    /// ### Example
+    /// ```
+    /// use cubic_bezier::{Handle,Bezier};
+    /// 
+    /// let mut bezier = Bezier::new(50,1);
+    /// bezier.push(Handle::detached(point!(-1.0,0.0),point!(0.0,0.0),point!(1.0,0.0)));
+    /// ```
     pub fn detached(before: Vector2D<F>, position: Vector2D<F>, direction: Direction) -> Self {
         let after = position.mul(F::from(2.0).unwrap()) - before;
         Handle::empty(before, position, after, Continuity::Detached(direction))

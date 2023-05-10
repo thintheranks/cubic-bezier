@@ -4,13 +4,11 @@ use std::{
     io::Write,
 };
 
-use cubic_bezier::{bezier::Bezier, handle::Handle};
+use cubic_bezier::{point, Bezier, Handle};
 
 use hypermelon::{self, prelude::Elem};
 use poloto::*;
 use vector2d::Vector2D;
-
-mod handle;
 
 fn main() {
     let mut bezier = Bezier::new(100, 2);
