@@ -152,7 +152,7 @@ impl<F: Float> Bezier<F> {
         ]
     }
     /// Helper function to get a vector of all control points.
-    pub fn all_part_point_dbg(&self) -> Vec<Vector2D<F>> {
+    pub fn all_part_point(&self) -> Vec<Vector2D<F>> {
         let mut result: Vec<Vector2D<F>> = vec![];
         for part_index in 0..self.handles.len() - 1 {
             result.push(self.part_points(part_index)[0].to_owned());
