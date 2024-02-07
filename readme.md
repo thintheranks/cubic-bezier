@@ -1,6 +1,6 @@
-# Cubic Bezier Library
+# cubic-bezier
 
-This Rust library provides functionality for working with cubic Bezier curves. With this library, you can create, manipulate, and calculate points along cubic Bezier curves.
+This crate provides functionality for working with cubic Bezier curves, such as creating, manipulating, and calculating points along cubic Bezier curves.
 
 ## Features
 
