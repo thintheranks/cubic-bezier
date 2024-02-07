@@ -20,7 +20,6 @@ mod tests {
         bezier.remove(0);
     }
 
-    // This one fails but this is known
     #[test]
     fn detached_handle_does_not_generate_points() {
         let mut bezier = Bezier::<f32>::new(2,10);
@@ -31,7 +30,7 @@ mod tests {
         bezier.push(detached);
         bezier.push(mirror);
 
-        assert!(bezier.calculate().len() == 9);
+        assert!(bezier.calculate().len() == 0);
     }
 
     #[test]

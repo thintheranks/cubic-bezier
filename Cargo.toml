@@ -14,7 +14,3 @@ categories = ["data-structures","graphics","visualization"]
 [dependencies]
 num = "0.4.0"
 vector2d = "2.2.0"
-
-[dev-dependencies]
-poloto = "18.0.6"
-hypermelon = "0.5.5"
