@@ -36,7 +36,7 @@ pub struct Handle<F: Float> {
 }
 
 impl<F: Float> Handle<F> {
-    fn empty(
+	fn empty(
         before: Vector2D<F>,
         position: Vector2D<F>,
         after: Vector2D<F>,
@@ -50,14 +50,14 @@ impl<F: Float> Handle<F> {
             validity: Validity::Uninitialized,
         }
     }
-
+	
     /// Create a handle that is not attached to the rest of the bezier
     /// on one or both sides. This function does not ensure continuity.
     /// ### Parameters
     /// A handle consists of three points in the order
-    /// 1. before,
-    /// 2. position,
-    /// 3. after.
+    /// - `before`: The point before the handle.
+    /// - `position`: The position of the handle.
+    /// - `after`: The point after the handle.
     /// ### Example
     /// ```
     /// use cubic_bezier::{Handle,Bezier};
@@ -69,13 +69,54 @@ impl<F: Float> Handle<F> {
         let after = position.mul(F::from(2.0).unwrap()) - before;
         Handle::empty(before, position, after, Continuity::Detached(direction))
     }
+
+    /// Create a handle that is broken and ensures G0 continuity for this part. This means that endpoints
+    /// are ensured to meet without discontinuity in position.
+    /// ### Parameters
+    /// - `before`: The point before the handle.
+    /// - `position`: The position of the handle.
+    /// - `after`: The point after the handle.
+    /// ### Example
+    /// ```
+    /// use cubic_bezier::{Handle, Bezier};
+    /// 
+    /// let mut bezier = Bezier::new(50, 1);
+    /// bezier.push(Handle::new(point!(-1.0, 0.0), point!(0.0, 0.0), point!(1.0, 0.0)));
+    /// ```
     pub fn new(before: Vector2D<F>, position: Vector2D<F>, after: Vector2D<F>) -> Self {
         Handle::empty(before, position, after, Continuity::Broken)
     }
+
+    /// Create a handle that is aligned and ensures G1 continuity for this part. This means that endpoints
+    /// are ensured to meet without discontinuity in both position and tangent.
+    /// ### Parameters
+    /// - `before`: The point before the handle.
+    /// - `position`: The position of the handle.
+    /// - `after_multiplier`: The multiplier to determine the position of the point after the handle.
+    /// ### Example
+    /// ```
+    /// use cubic_bezier::{Handle, Bezier};
+    /// 
+    /// let mut bezier = Bezier::new(50, 1);
+    /// bezier.push(Handle::aligned(point!(-1.0, 0.0), point!(0.0, 0.0), 2.0));
+    /// ```
     pub fn aligned(before: Vector2D<F>, position: Vector2D<F>, after_multiplier: F) -> Self {
         let after = position + (position - before) * after_multiplier;
         Handle::empty(before, position, after, Continuity::Aligned)
     }
+
+    /// Create a handle that is mirrored and ensures G2 continuity for this part. This means that endpoints
+    /// are ensured to meet without discontinuity in position, tangent, and curvature.
+    /// ### Parameters
+    /// - `before`: The point before the handle.
+    /// - `position`: The position of the handle.
+    /// ### Example
+    /// ```
+    /// use cubic_bezier::{Handle, Bezier};
+    /// 
+    /// let mut bezier = Bezier::new(50, 1);
+    /// bezier.push(Handle::mirrored(point!(-1.0, 0.0), point!(0.0, 0.0)));
+    /// ```
     pub fn mirrored(before: Vector2D<F>, position: Vector2D<F>) -> Self {
         let after = position.mul(F::from(2.0).unwrap()) - before;
         Handle::empty(before, position, after, Continuity::Mirrored)

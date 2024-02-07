@@ -32,7 +32,7 @@ macro_rules! point {
 /// since it will cause the entire `points` vec to be allocated at
 /// once, avoiding unneccecary vector allocations. This value does
 /// not need to be accurate and you can set it to `0` to allocate no
-/// space to begin with, then push to it.
+/// space to begin with.
 /// 
 /// The calculated points are stored internally. You can get a reference
 /// to the points by calling `calculate()`. Calling this function multiple
@@ -151,7 +151,7 @@ impl<F: Float> Bezier<F> {
             &self.handles[part_index + 1].position,
         ]
     }
-    /// Debug function to get a vector of all control points.
+    /// Helper function to get a vector of all control points.
     pub fn all_part_point_dbg(&self) -> Vec<Vector2D<F>> {
         let mut result: Vec<Vector2D<F>> = vec![];
         for part_index in 0..self.handles.len() - 1 {
@@ -173,7 +173,7 @@ impl<F: Float> Bezier<F> {
             || self.handles[part_index + 1].continuity == Continuity::Detached(Direction::Both)
     }
     /// Calculate a single part.
-    /// # Parameters
+    /// ### Parameters
     /// * Part_index: index of the handle at the start of a part.
     fn calculate_part(&mut self, part_index: usize) {
         if part_index >= self.handles.len() - 1 {
