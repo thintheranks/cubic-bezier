@@ -2,7 +2,7 @@
 name = "cubic-bezier"
 version = "1.0.0"
 edition = "2021"
-license-file = "LICENCE"
+license-file = "LICENSE"
 description = "Create and modify cubic bezier curves"
 repository = "https://github.com/thintheranks/cubic-bezier"
 readme = "readme.md"
