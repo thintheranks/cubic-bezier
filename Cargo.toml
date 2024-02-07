@@ -1,12 +1,20 @@
 [package]
 name = "cubic-bezier"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
+license-file = "LICENCE"
+description = "Create and modify cubic bezier curves"
+repository = "https://github.com/thintheranks/cubic-bezier"
+readme = "readme.md"
+keywords = ["curves","bezier","graphics","visualization"]
+categories = ["data-structures","graphics","visualization"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 num = "0.4.0"
 vector2d = "2.2.0"
+
+[dev-dependencies]
 poloto = "18.0.6"
 hypermelon = "0.5.5"

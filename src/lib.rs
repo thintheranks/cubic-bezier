@@ -63,27 +63,38 @@ impl<F: Float> Bezier<F> {
     }
 
     fn invalidate_handle(&mut self, handle_index: usize) {
-        self.handles[handle_index].validity = Validity::Invalidated;
+        if handle_index >= self.handles.len() {
+            return;
+        }
+        self.handles[handle_index as usize].validity = Validity::Invalidated;
     }
 
     pub fn push(&mut self, handle: Handle<F>) {
         self.handles.push(handle);
     }
     pub fn insert(&mut self, index: usize, handle: Handle<F>) {
-        self.invalidate_handle(index - 1);
+        if index != 0 {
+            self.invalidate_handle(index - 1);
+        }
         self.handles.insert(index, handle);
     }
     pub fn splice(&mut self, range: Range<usize>, handles: Vec<Handle<F>>) {
-        self.invalidate_handle(range.start - 1);
+        if range.start != 0 {
+            self.invalidate_handle(range.start - 1);
+        }
         self.handles.splice(range, handles);
     }
 
     pub fn remove(&mut self, index: usize) {
+        if index != 0 {        
+            self.invalidate_handle(index - 1);
+        }            
         self.handles.remove(index);
-        self.invalidate_handle(index - 1);
     }
     pub fn drain(&mut self, range: Range<usize>) {
-        self.invalidate_handle(range.start - 1);
+        if range.start != 0 {
+            self.invalidate_handle(range.start - 1);
+        }
         self.handles.drain(range);
     }
 
@@ -202,15 +213,15 @@ impl<F: Float> Bezier<F> {
                 + *controls[3],
         );
 
-        let start_index = (self.detail + 1) * (part_index - self.num_ignored);
+        let start_index = (self.detail) * (part_index - self.num_ignored);
         if validity == &Validity::Uninitialized {
             self.points.splice(
                 start_index..start_index,
-                vec![Vector2D::new(F::zero(), F::zero()); self.detail + 1],
+                vec![Vector2D::new(F::zero(), F::zero()); self.detail],
             );
         }
 
-        for point_index in 0..=self.detail {
+        for point_index in 0..self.detail {
             let t = F::from(point_index).unwrap() / F::from(self.detail).unwrap();
             let tpow2 = t * t;
             let tpow3 = t * tpow2;

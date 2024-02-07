@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::*;
+    use approx::assert_relative_eq;
 
     #[test]
     fn handle_operations_do_not_panic() {
@@ -15,27 +16,26 @@ mod tests {
     }
 
     #[test]
-    fn wrong_inputs_return_err() {
-
-    }
-    
-    #[test]
-    fn handle_creation_continuity() {
-
-    }
-    
-    #[test]
     fn knot_insert_result_is_same() {        
-        let mut bezier = Bezier::new(10,3);
-        bezier.splice(0..0,vec![
+        let mut bezier_two = Bezier::new(20,2);
+        let mut bezier_three = Bezier::new(10,3);
+        bezier_two.splice(0..0,vec![
             Handle::mirrored(point!(0.0,0.0),point!(1.0,1.0)),
             Handle::mirrored(point!(4.0,1.0),point!(5.0,0.0)),
         ]);
-        let points_before = bezier.calculate().to_owned();
+        bezier_three.splice(0..0,vec![
+            Handle::mirrored(point!(0.0,0.0),point!(1.0,1.0)),
+            Handle::mirrored(point!(4.0,1.0),point!(5.0,0.0)),
+        ]);
+        let points_no_knot = bezier_two.calculate().to_owned();
 
-        bezier.knot_insert(0.5);
-        let points_after = bezier.calculate().to_owned();
+        bezier_three.knot_insert(0.5);
+        let points_knot = bezier_three.calculate().to_owned();
 
-        assert_eq!(points_before,points_after);
+        let epsilon = 0.0001;
+        for i in 0..points_knot.len() {
+            assert!((points_knot[i].x - points_no_knot[i].x).abs() < epsilon);
+            assert!((points_knot[i].y - points_no_knot[i].y).abs() < epsilon);
+        }
     }
 }
