@@ -57,13 +57,13 @@ impl<F: Float> Handle<F> {
     /// A handle consists of three points in the order
     /// - `before`: The point before the handle.
     /// - `position`: The position of the handle.
-    /// - `after`: The point after the handle.
+    /// - `direction`: The direction in which the handle is not attached. For example, `Direction::Forward` means the part after this handle is not connected.
     /// ### Example
     /// ```
     /// use cubic_bezier::{Handle,Bezier};
     /// 
     /// let mut bezier = Bezier::new(50,1);
-    /// bezier.push(Handle::detached(point!(-1.0,0.0),point!(0.0,0.0),point!(1.0,0.0)));
+    /// bezier.push(Handle::detached(point!(-1.0,0.0),point!(0.0,0.0),Direction::Forward));
     /// ```
     pub fn detached(before: Vector2D<F>, position: Vector2D<F>, direction: Direction) -> Self {
         let after = position.mul(F::from(2.0).unwrap()) - before;
